@@ -1,0 +1,11 @@
+<script id="template" type="text/x-handlebars">
+  {{var "title" "About-title"}}
+</script>
+
+{{> header }}
+
+aboutty
+
+{{> footer }}  
+
+
