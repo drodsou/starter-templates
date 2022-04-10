@@ -1,0 +1,18 @@
+{
+  "scripts": {
+    "dev": "ts-node-dev server/server.ts",
+    "build:client": "vite build --outDir dist/client",
+    "build:server": "vite build --outDir dist/server --ssr client/render-page.js",
+    "build": "yarn build:client && yarn build:server",
+    "serve": "NODE_ENV=production node server.js",
+    "generate": "vite build --outDir dist/static && npm run build:server && node generate.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.23",
+    "ts-node-dev": "^1.1.8",
+    "vite": "^2.6.14"
+  }
+}

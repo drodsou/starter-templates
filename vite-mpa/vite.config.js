@@ -8,6 +8,12 @@ import { resolve } from 'path';
 const mymiddleware = {
   name: 'mymiddleware',
   configureServer(server) {
+    server.middlewares.use('', (req, res, next) => {
+      console.log('mid', req.url)
+      req.url += 'index.md'
+      next()
+    })
+
     server.middlewares.use('/api', (req, res, next) => {
       res.setHeader('content-type', 'application/json');
       res.end(JSON.stringify({valgame: 'elpayo'}));
@@ -18,17 +24,6 @@ const mymiddleware = {
 }
 
 
-
-// handlebars
-// const pageData = {
-//   '/index.html': {
-//     title: 'Index',
-//   },
-//   '/about/index.html': {
-//     title: 'About',
-//   },
-// };
-
 const root = resolve(__dirname, 'src/pages');
 const outDir = resolve(__dirname, 'dist');
 
@@ -37,15 +32,20 @@ const fs = require('fs');
 const dir = (d) => fs.readdirSync(d, {withFileTypes:true})
   .map(f=>f.isDirectory() ? dir(d + '/' + f.name) : d + '/' + f.name)
   .flat();
-let re = /pages\/(.*)\/index\.html/
+let re = /pages\/(.*)\/index\.(md)/
 let pages = dir(root)
   .filter(e=> e.match(re))
-  .map(e=>e.match(re)[1]);
+  
+
+console.log(pages)
   
 const input = {
   index: resolve(root, 'index.html'),
 }  
-pages.forEach(p=>input[p] = resolve(root, p + '/index.html'));
+pages.forEach(p=>{
+  let [route, ext] = p.match(re)
+  input[p] = resolve(root, p + `/index.md`);
+});
 
 // - config
 export default {
@@ -53,12 +53,6 @@ export default {
   plugins: [
     mymiddleware,
     myplugin(),
-    // handlebars({
-    //   partialDirectory: resolve(__dirname, 'src/_partials'),
-    //   // context(pagePath) {
-    //   //   return pageData[pagePath];
-    //   // },
-    // }),
   ],
   build: {
     outDir,

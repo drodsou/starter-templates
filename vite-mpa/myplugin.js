@@ -1,20 +1,18 @@
-// const fileRegex = /\.html\.js$/
-const fileRegex = /\.html$/
+const {marked} = require('marked');
 
 export default function myPlugin() {
   return {
     name: 'transform-html',
+    enforce: 'pre',
+    async transform(src, ctx) {
+      console.log('transform', ctx);
+      if (!ctx.match(/\.(html|md)$/)) { return src }
+      // const html = (await import(id)).default;
+      return  transformHtml(src, ctx);
+    }
+    
 
-    transformIndexHtml: {
-      enforce: 'pre',
-
-      async transform(src, ctx) {
-        console.log('transform', ctx.path);
-        // if (!fileRegex.test(ctx)) { return }
-        // const html = (await import(id)).default;
-        return  transformHtml(src);
-      }
-    },
+    
 
     // -- copied from handlebars plugin
     // configResolved(config) {
@@ -39,17 +37,22 @@ export default function myPlugin() {
 
 
 // frontmatter regex
-function transformHtml(src) {
+function transformHtml(src, id) {
   console.log('transformHtml');
   const fmRegex = /^---\n([\s\S]*?)\n---\n/
-  const fmText = (fmRegex.exec(src) ?? [''])[0];
+  let fmText = (fmRegex.exec(src) ?? [''])[0];
   fmEntries = fmText.replaceAll('---','').trim().split('\n')
     .map(e => e.split(':').map(e2=>e2.trim()) )
-  let body = layout(src.replace(fmText, ''));
+  fmObj = Object.fromEntries(fmEntries)
+  if (fmObj.markdown) { fmText = marked.parse(fmText)  }
+
+  let html = layout(src.replace(fmText, ''));
   fmEntries.forEach(fmEntry => {
-    body = body.replaceAll(`{{${fmEntry[0]}}}`, fmEntry[1]);
+    html = html.replaceAll(`{{${fmEntry[0]}}}`, fmEntry[1]);
   });
-  return body;
+  // if (id.endsWith('.md')) { body = marked(body) }
+  
+  return html;
 }
 
 
