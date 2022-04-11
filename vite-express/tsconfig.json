@@ -1,19 +1,19 @@
 {
   "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",                     
+    "esModuleInterop": true,
     "strict": true,
-    "module": "ES2020",
-    "moduleResolution": "Node",
-    "target": "ES2017",
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "types": ["vite/client"],
-    // "jsx": "react",
+    "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
-    "esModuleInterop": true
+    "moduleResolution": "Node",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "types": ["node", "express", "vite/client"],
+    // "--removebellow-when-ready-for-prod": true,
+    "noImplicitAny": false,
+    "strictNullChecks": false
   },
   "ts-node": {
-    "transpileOnly": true,
-    "compilerOptions": {
-      "module": "CommonJS"
-    }
+    "transpileOnly": true
   }
 }

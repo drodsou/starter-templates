@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "moduleResolution": "Node",
+    "module": "esnext",
+    "target": "esnext",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "types": ["vite/client"],
+    // "jsx": "react",
+  },
+  "ts-node": {
+    "transpileOnly": true,
+    // "compilerOptions": {
+    //   "strict": true,
+    //   "moduleResolution": "Node",
+    //   "module": "esnext",
+    //   "target": "esnext",
+    //   "esModuleInterop": true,
+    //   "skipLibCheck": true,
+    // }
+  }
+  
+}

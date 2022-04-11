@@ -1,26 +1,19 @@
-# Vit SSR/SSG
+# Vite SSR/SSG
 
+Vite based ssr/ssg a la Sveltekit / Nextjs like but for vanilla js and express server
+
+## features
+
+- pages file router
+- markdown/html with frontmatter
+- optional loader.js for each page
+- hot reload css, vanillajs modules
+- autoserver restart
+- optional typescript
+- most magic exposed, minimal dependence on third party
+
+
+## related
 
 [Vite SSR docs](https://vitejs.dev/guide/ssr.html)
 
-## DONE
-
-- pages routing markdown/html dynamic ssr
-- autoreload on md change
-- hmr css & vanilla js modules (!)
-- checked that client imports resolve node_modules
-- folder organization client/server
-- static folder
-- typescript in client checked
-- typescript in server ts-node-dev
-- rpc type sharing srv/client (ts-node-dev + server generates shared/d.ts on restart
-
-## TODO
-
-- better routing 
-- convert markdown / frontmatter
-- layouts frontmatter
-- loaders in frontmater
-- generate ssg, copy static
-- server prod ok ?
-- tailwind

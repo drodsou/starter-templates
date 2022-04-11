@@ -1,4 +1,6 @@
 
+// you could here: import '../static/style.css';
+
 import {supu} from './client-module2';
 export function init() {
   supu();
