@@ -1,9 +1,10 @@
+let foo: string = 'bar';
 
 export default async function loader (pageContent='') {
   
   console.log('running about.loader.ts ');
   // -- some async fetch
-  let data = await new Promise(resolve=>{
+  let data: any = await new Promise(resolve=>{
     setTimeout(()=>resolve(['value1','value2']), 500)
   });
   let target = "loader";

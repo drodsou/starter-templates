@@ -1,17 +1,17 @@
 
 ## TODO
 
-- move server require =>import, type=module in package.json
-- loaders .loader.ts or .loader.js ??
+- build: generate ssg, copy static, tsc server, 
+- dist: vite bundle client
+- loaders .loader.ts or .loader.js ??  (dev&prod)
 - loader helper (hmr, auto init on browser import)
-- generate ssg, copy static
-- server prod ok ?
 - tailwind: https://tailwindcss.com/docs/guides/vite
 - consistent __dirname /C:/folder,, C:/folder  /c/folder, C:\\folder =>  [C:]/folder
   - shorten file pathserver / autoreload pluging skipped file console.log
 
 ## DONE
 
+- move server require =>import, type=module in package.json
 - optional loader.js files for pages  
 - layout chose from frontmatter
 - convert markdown / frontmatter

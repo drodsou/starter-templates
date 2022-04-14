@@ -2,17 +2,19 @@
   "compilerOptions": {
     "target": "es2020",
     "module": "es2020",                     
-    "esModuleInterop": true,
+    "esModuleInterop": false,
     "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": false,
     "moduleResolution": "Node",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "types": ["node", "express", "vite/client"],
+    "types": ["node"],
     // "--removebellow-when-ready-for-prod": true,
     "noImplicitAny": false,
     "strictNullChecks": false,
     // "allowSyntheticDefaultImports": true
+    //"noResolve": true,
+    //  "skipLibCheck": true,
+
   },
   "ts-node": {
     "transpileOnly": true

@@ -1,8 +1,10 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { render } from './render-page';
+
+const __dirname = import.meta.url.split('/').slice(3, -1).join('/');
 
 const INDEX_HTML_PATH = path.resolve(__dirname, 'dist/static/index.html');
-const { render } = require('./dist/server/render-page.js');
 
 
 (async () => {

@@ -37,6 +37,7 @@ async function createServer() {
   // a development middleware), using 'html' instead.
   const vite = await createViteServer({
     server: { middlewareMode: 'ssr' },
+    // @ts-ignore
     plugins: [autoreloadExtraPlugin()  ]
 
   })
@@ -73,7 +74,7 @@ async function createServer() {
   
       // 6. Send the rendered HTML back.
       res.status(200).set({ 'Content-Type': 'text/html' }).end(html)
-    } catch (e) {
+    } catch (e: any) {
       // If an error is caught, let Vite fix the stracktrace so it maps back to
       // your actual source code.
       vite.ssrFixStacktrace(e)
@@ -83,7 +84,7 @@ async function createServer() {
   })
 
   app.listen(SERVER_PORT, () => {
-    console.log(`Server listening on port ${SERVER_PORT}`);
+    console.log(`Server listening on http://localhost:${SERVER_PORT}`);
   })
 }
 
