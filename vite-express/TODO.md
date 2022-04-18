@@ -1,6 +1,8 @@
 
 ## TODO
 
+- vanilla comp: loading/result, class toggle segun estado, ssr+client
+
 - build: generate ssg, copy static, tsc server, 
 - dist: vite bundle client
 - loaders .loader.ts or .loader.js ??  (dev&prod)

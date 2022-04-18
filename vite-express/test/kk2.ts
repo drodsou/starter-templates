@@ -1,6 +1,6 @@
 // import yey from './client/pages/about.loader';
 // import {init} from './client/lib/client-module';
-import {penacho} from './mod.js';
+import {penacho} from './mod';
 
 penacho();
 

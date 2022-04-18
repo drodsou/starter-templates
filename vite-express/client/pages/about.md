@@ -7,6 +7,7 @@ title: about
 about page with loade data
 
 {{loader}}
+
 <div id="loader">...</div>
 
 a list should be above from loader

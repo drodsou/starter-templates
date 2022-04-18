@@ -14,6 +14,4 @@ In dev, if you click button above several times and then modify client/lib/clien
 
 <script type="module" src="/client/lib/client-module.ts"></script>
 
-
-
 <img client="/espana.png" style="height:80px;">
