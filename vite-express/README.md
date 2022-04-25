@@ -6,7 +6,7 @@ Vite based ssr/ssg a la Sveltekit / Nextjs like but for vanilla js and express s
 
 - pages file router
 - markdown/html with frontmatter
-- optional loader.js for each page
+- optional loader samePageName.js for each page
 - hot reload css, vanillajs modules
 - autoserver restart
 - optional typescript
