@@ -6,8 +6,13 @@ title: component
 
 ssr + continue component
 
-{{loader}}
+Button 1
 
-<script type="module" src="/client/pages/comp.loader.ts"></script>
+{{seButton1}}
+
+Button 2
+
+{{seButton2}}
+
 
 

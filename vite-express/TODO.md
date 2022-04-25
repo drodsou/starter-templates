@@ -1,22 +1,20 @@
 
 ## TODO
 
-- page.loader refactor: auto include loader script in .md
-
 - build: generate ssg, copy static, tsc server, 
 - dist: vite bundle client
-- loaders .loader.ts or .loader.js ??  (dev&prod)
-- loader helper (hmr, auto init on browser import)
+- loader helper (hmr)
 - tailwind: https://tailwindcss.com/docs/guides/vite
 - consistent __dirname /C:/folder,, C:/folder  /c/folder, C:\\folder =>  [C:]/folder
   - shorten file pathserver / autoreload pluging skipped file console.log
 
 ## DONE
 
-- vanilla component ssr+client continue, pattern
+- page loader .ts refactor, auto include loader script in .md, returns frontmatter
+- vanilla component pattern: ssr + client continue/hydrate
 - estado, ssr+client
 - move server require =>import, type=module in package.json
-- optional loader.js files for pages  
+- optional loader .js/ts files for pages  
 - layout chose from frontmatter
 - convert markdown / frontmatter
 - pages routing 

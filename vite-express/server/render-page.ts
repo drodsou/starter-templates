@@ -31,13 +31,25 @@ export async function render(url, context) {
   // -- parse frontmatter
   const fmRegex = /^---\n([\s\S]*?)\n---\n/
   let pageFmText = (fmRegex.exec(pageContent) ?? [''])[0];
-  let pageFmEntries = pageFmText.replaceAll('---','').trim().split('\n')
-    .map(e => e.split(':').map(e2=>e2.trim()) )
-  let pageFmObj = Object.fromEntries(pageFmEntries)
+  let pageFmObj = Object.fromEntries(
+    pageFmText.replaceAll('---','').trim().split('\n')
+      .map(e => e.split(':').map(e2=>e2.trim()) )
+  )
+  
+  // -- add additional Fm entries from server loader, if exist
+  let pageLoaderPath = pagePath.replace(/(\.md|\.html)$/, '.ts');
+  if (fs.existsSync(pageLoaderPath)) {
+    let loaderFmObj = await import(pageLoaderPath).then(m=>m.frontmatter());
+    pageFmObj = {...pageFmObj, ...loaderFmObj}
+
+    // auto add loader script tag for client
+    let clientScriptPath = pageLoaderPath.match(/\/client\/.*$/)[0]
+    pageContent += `<script type="module" src="${clientScriptPath}"></script>`
+  }
 
   // -- check frontmatter defaults
   if (!pageFmObj.lang) { pageFmObj.lang = 'en'; }
-  if (!pageFmObj.titte) { pageFmObj.title = 'missing title'; }
+  if (!pageFmObj.title) { pageFmObj.title = 'missing title'; }
 
   // -- get body, if markdown convert to html
   let pageBody = pageContent.replace(pageFmText, '')
@@ -49,18 +61,9 @@ export async function render(url, context) {
   let pageHtml = withLayout(pageBody, pageFmObj.layout ?? 'main');
 
   // -- substitute frontmatter values
-  pageFmEntries.forEach(fmEntry => {
+  Object.entries(pageFmObj).forEach(fmEntry => {
     pageHtml = pageHtml.replaceAll(`{{${fmEntry[0]}}}`, fmEntry[1]);
   });
-
-  // -- execute page loader if exists
-  let pageLoaderPath = pagePath.replace(/(\.md|\.html)$/, '.loader.ts');
-  console.log('loader?', pageLoaderPath)
-  if (fs.existsSync(pageLoaderPath)) {
-    console.log('imporing loader');
-    // pageLoaderPath = pageLoaderPath.replace(".ts", "");
-    pageHtml = (await import(pageLoaderPath)).default(pageHtml);
-  }
   
   return pageHtml;
   

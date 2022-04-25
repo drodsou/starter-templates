@@ -8,10 +8,7 @@ about page with loade data
 
 {{loader}}
 
-<div id="loader">...</div>
+a list should be above from loader, then updated by client
 
-a list should be above from loader
-
-<script type="module" src="/client/pages/about.loader.ts"></script>
 
 
