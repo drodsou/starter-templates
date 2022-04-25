@@ -1,7 +1,7 @@
 
 ## TODO
 
-- vanilla comp: loading/result, class toggle segun estado, ssr+client
+- page.loader refactor: auto include loader script in .md
 
 - build: generate ssg, copy static, tsc server, 
 - dist: vite bundle client
@@ -13,6 +13,8 @@
 
 ## DONE
 
+- vanilla component ssr+client continue, pattern
+- estado, ssr+client
 - move server require =>import, type=module in package.json
 - optional loader.js files for pages  
 - layout chose from frontmatter

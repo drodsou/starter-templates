@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "dev": "nodemon --exec ts-node-esm server/server.ts",
+    "dev": "nodemon -i apiServer.d.ts --exec ts-node-esm server/server.ts",
     "build:client": "vite build --outDir dist/client",
     "build:server": "vite build --outDir dist/server --ssr client/render-page.js",
     "build": "yarn build:client && yarn build:server",
