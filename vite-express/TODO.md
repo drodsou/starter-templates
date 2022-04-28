@@ -1,8 +1,9 @@
 
 ## TODO
 
-- build: generate ssg, copy static, tsc server, 
-- dist: vite bundle client
+- build: convert client .ts, bundle and copy static (vite?, rollup?)
+  - how vite and rollup work together
+
 - loader helper (hmr)
 - tailwind: https://tailwindcss.com/docs/guides/vite
 - consistent __dirname /C:/folder,, C:/folder  /c/folder, C:\\folder =>  [C:]/folder
@@ -10,6 +11,7 @@
 
 ## DONE
 
+- generate all pages to html (1st part)
 - page loader .ts refactor, auto include loader script in .md, returns frontmatter
 - vanilla component pattern: ssr + client continue/hydrate
 - estado, ssr+client
