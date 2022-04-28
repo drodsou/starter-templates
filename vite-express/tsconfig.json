@@ -6,7 +6,7 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
-    "moduleResolution": "Node",
+    "moduleResolution": "node",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "types": ["node", "express", "vite/client"],
     // "--removebellow-when-ready-for-prod": true,
@@ -15,6 +15,7 @@
     // "allowSyntheticDefaultImports": true
   },
   "ts-node": {
-    "transpileOnly": true
+    "transpileOnly": true,
+    "moduleResolution": "node"
   }
 }

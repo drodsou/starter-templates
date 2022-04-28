@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "dev": "nodemon -i apiServer.d.ts --exec ts-node-esm server/server.ts",
+    "_dev": "nodemon -i apiServer.d.ts --exec ts-node-esm server/server.ts",
+    "dev": "nodemon -i apiServer.d.ts --exec node --experimental-specifier-resolution=node --loader ts-node/esm server/server.ts",
     "build:client": "vite build --outDir dist/client",
     "build:server": "vite build --outDir dist/server --ssr client/render-page.js",
     "build": "yarn build:client && yarn build:server",
