@@ -12,6 +12,6 @@ In dev, if you click button above several times and then modify client/lib/clien
 
 <div id="app">...</div>
 
-<script type="module" src="/client/lib/client-module.ts"></script>
+<script type="module" src="../lib/client-module.ts"></script>
 
 <img client="/espana.png" style="height:80px;">

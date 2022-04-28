@@ -5,7 +5,8 @@ import { render } from './render-page';
 const __dirname = import.meta.url.split('/').slice(3, -1).join('/');
 
 const pagesDir = path.resolve(__dirname, '../client/pages');
-const distDir = path.resolve(__dirname, '../_dist');
+const distDir = path.resolve(__dirname, '../client/pages');
+// const distDir = path.resolve(__dirname, '../_dist');
 
 const readdirSyncRecursive = (d)=>  fs.readdirSync(d, {withFileTypes:true})
   .map(f=>f.isDirectory() ? readdirSyncRecursive(d + '/' + f.name) : d + '/' + f.name)
