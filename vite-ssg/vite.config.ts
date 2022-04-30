@@ -1,9 +1,9 @@
 import fs from 'fs';
 import path from 'path';
-import {vmpa, autoreloadExtraPlugin} from './vite-plugin-vmpa/plugin';
+import vmpa from './vite-plugin-vmpa/plugin';
 
 export default {
-  plugins: [vmpa(), autoreloadExtraPlugin()],
+  plugins: [vmpa()],
   root: 'src',
   build: {
     outDir : '../dist',

@@ -37,7 +37,7 @@ export default async function pageTransform (pagePath, context={}) {
     let clientScriptPath = pageLoaderPath.match(/\/client\/.*$/)[0]
     pageContent += `<script type="module" src="${clientScriptPath}"></script>`
   }
-  console.log('--what3')    
+   
   // -- check frontmatter defaults
   if (!pageFmObj.lang) { pageFmObj.lang = 'en'; }
   if (!pageFmObj.title) { pageFmObj.title = 'missing title'; }

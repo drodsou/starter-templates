@@ -1,11 +1,22 @@
 import fs from "fs"; 
 import customTransformHtml from './pageTransform';
 
-export function vmpa () {
+// -- plugins wrapper
+export default function plugin() {
   const PROJECT_ROOT = getViteConfigPath();
+  // console.log({PROJECT_ROOT})
+  return [vmpaPlugin(PROJECT_ROOT),  autoreloadExtraPlugin() ]
+}
 
-  console.log({PROJECT_ROOT})
 
+/**
+ * main plugin
+ * - virtual index.html
+ * - maps .html to .md
+ * - autogenerates input entries from .md/.html in root (/src)
+*/
+function vmpaPlugin (PROJECT_ROOT) {
+ 
   return {
     name: 'myplugin',
     enforce: 'pre',
@@ -37,6 +48,7 @@ export function vmpa () {
           req.originalUrl = req.url
           let id = (rootDir + req.originalUrl);
           let content = await customTransformHtml(id);
+          // adds default vite HMR
           content = await server.transformIndexHtml('',content)
 
           // res.status(200).set({ 'Content-Type': 'text/html' }).end(content)
@@ -162,7 +174,12 @@ function getViteConfigPath() {
 }
 
 
-export function autoreloadExtraPlugin() {
+/**
+ * additional plugin
+ * - autoreload on .md change
+ * - custom HMR
+*/
+function autoreloadExtraPlugin() {
   return {
     name: 'autoreload-extra',
     enforce: 'post',
