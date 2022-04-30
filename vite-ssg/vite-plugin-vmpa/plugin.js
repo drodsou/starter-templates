@@ -1,15 +1,31 @@
 import fs from "fs"; 
 
-let IS_DEV = false;
 
 export default function myPlugin() {
+
+  const PROJECT_ROOT = new Error().stack
+    .replaceAll('\\','/')
+    .match(/\(([^)]*vite\.config\.js):/)[1]
+    .replace('/vite.config.js','');
+  
+
   return {
     name: 'myplugin',
     enforce: 'pre',
+
+    config(config, {command}) {
+      // console.log('--config');
+      if (command === 'build') {
+        config.build.rollupOptions.input = inputPages(PROJECT_ROOT + '/' + config.root)
+      }
+    },
+
     configureServer(server) {
-      IS_DEV = true;
-      server.middlewares.use((req, res, next) => {
-        // custom handle request...
+      
+      let rootDir = server.config.root
+      // -- for dev mode only
+      server.middlewares.use(async (req, res, next) => {
+
         console.log('--middleware', req.url);
         if (req.url.startsWith('/@') || req.url.startsWith('/__vite')) { return next(); }
 
@@ -20,23 +36,20 @@ export default function myPlugin() {
         }
         if (ext === 'html') {
           req.originalUrl = req.url
-          req.url = `/index.html`
-          console.log('--middleware2', req.url);
+          let id = (rootDir + req.originalUrl);
+          let content = await customTransformHtml(id);
+          res.setHeader('Content-Type', 'text/html');
+          res.write(content);
+          res.end();
+          return;
         }
         next();
       })
     },
 
-    async buildStart(...args) {
-      console.log('--buildStart')
-    },
+    // -- .html process when vite build
     async resolveId(importee, importer, importOpts) {
       // console.log('--resolveId', importee, importer)
-      
-      // if (importee === '/index') {
-      //   return 'C:/Users/drodsou/dev/starter-templates/vite-ssg/index.html';
-      // }
-
       if (importee.endsWith('.html')) {
         return importee;  // tell Vite index.html exists when it looks for it
       }
@@ -44,35 +57,26 @@ export default function myPlugin() {
     async load(id) {
       // console.log('--load', id)
       if (id.endsWith('.html')) {
-        // read .md contents instead
-        let content = await fs.promises.readFile(id.replace('.html','.md'), "utf-8")
-        // do your custom transformation if needed, eg md => html
-        content = layout(content)   
-        return content;
+        return await customTransformHtml(id)
       }
     },
     transform(src, ctx) {
       // console.log('--transform', ctx)
- 
-      // this is if you need to transform custom 'import' as well
+       // this is if you need to transform custom 'import' as well
     },
     async transformIndexHtml(html, ctx) {
-      if (!IS_DEV) return html;
-      
-      console.log('--transformIndexHtml', ctx.originalUrl)
-      let root = ctx.server.config.root;
-      let id = (root + ctx.originalUrl).replace('.html','.md');
-      console.log('--', id)
-      let content = await fs.promises.readFile(id, "utf-8")
-      content = layout(content)  
-
-      return content;
-      // return html.replace(
-      //   /<title>(.*?)<\/title>/,
-      //   `<title>Title replaced!</title>`
-      // )
+      // dev should never reach here, handled by middleware
+      // build needs to do nothing as its already transformed by load()
     }
   }
+}
+
+async function customTransformHtml(htmlPath) {
+  // TODO check if html or md exist
+  let id =  htmlPath.replace('.html','.md');
+  let content = await fs.promises.readFile(id, "utf-8")
+  content = layout(content)  
+  return content;
 }
 
 
@@ -93,5 +97,37 @@ function layout(body) {
     </body>
   </html>
   `;
+}
+
+
+function inputPages (pagesDir) {
+
+  const readdirSyncRecursive = (d)=>  fs.readdirSync(d, {withFileTypes:true})
+    .map(f=>f.isDirectory() ? readdirSyncRecursive(d + '/' + f.name) : d + '/' + f.name)
+    .flat();
+  
+  let re = /\.(md|html)$/
+  let pages = readdirSyncRecursive(pagesDir)
+    .filter(e=> e.match(re))
+    .map(e=>e.replace(pagesDir,'').replace('.md','.html'))
+    .filter(e=>e !== '/index.html');
+
+  let input = {
+    'index' : pagesDir + '/index.html'
+  }
+  pages.forEach(p=>{
+    input[p.slice(1)] = pagesDir + p;
+  });
+
+
+  return input;
+
+  // input: {
+  //   'index': 'index.html',
+  //   'about/index.html': 'about/index.html'
+  // }
+
 
 }
+
+

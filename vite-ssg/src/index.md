@@ -6,4 +6,4 @@ title: index
 
 
 <div id="app">app</div>
-<script type="module" src="/src/main.ts"></script>
+<script type="module" src="/main.ts"></script>
