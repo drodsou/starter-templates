@@ -18,4 +18,5 @@ vite plugin for a vanilla mpa similar to nextjs/sveltekit
 - dont load .md if .html exists
 - configurable transformer: .md + layouts instead of .html, or other custom template, providing transformer.
 - configurable layouts
-- server functions
+- server functions (build)
+

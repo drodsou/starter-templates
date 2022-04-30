@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
+    "target": "esnext",
     "useDefineForClassFields": true,
-    "module": "ESNext",
-    "lib": ["ESNext", "DOM"],
+    "module": "esnext",
+    "lib": ["ES2021.String", "dom"],
     "moduleResolution": "Node",
     "strict": true,
     "sourceMap": true,
@@ -16,5 +16,8 @@
     "noImplicitReturns": true,
     "skipLibCheck": true
   },
-  "include": ["src"]
+  "include": ["src", "vite-env.d.ts"],
+  "ts-node": {
+    "transpileOnly": false
+  }
 }

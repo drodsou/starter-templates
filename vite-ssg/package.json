@@ -5,10 +5,15 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "ts": "esmo"
   },
   "devDependencies": {
-    "typescript": "^4.5.4",
+    "@types/node": "^17.0.30",
+    "marked": "^4.0.14",
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.4",
     "vite": "^2.9.5"
-  }
+  },
+  "type": "module"
 }

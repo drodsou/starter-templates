@@ -1,2 +1,7 @@
+---
+title: Abouty
+---
 
-  ABOUT
+ABOUTx3
+
+{{title}}
