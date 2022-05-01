@@ -47,7 +47,7 @@ function vmpaPlugin (PROJECT_ROOT) {
           // thanks to: https://github.com/windsonR/vite-plugin-virtual-html
           req.originalUrl = req.url
           let id = (rootDir + req.originalUrl);
-          let content = await customTransformHtml(id);
+          let content = await customTransformHtml(id, rootDir);
           // adds default vite HMR
           content = await server.transformIndexHtml('',content)
 

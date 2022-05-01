@@ -3,8 +3,8 @@ import {withLayout} from './pageLayouts';
 import fs from 'fs';
 // const __dirname = import.meta.url.split('/').slice(3,-1).join('/');
 
-export default async function pageTransform (pagePath, context={}) {
-  console.log('--pageTransform', pagePath);
+export default async function pageTransform (pagePath, pageRootPath) {
+  
   if (!fs.existsSync(pagePath)) {
     pagePath = pagePath.replace('.html','.md')
   } 
@@ -24,7 +24,7 @@ export default async function pageTransform (pagePath, context={}) {
   )
   
   // -- add additional Fm entries from server loader, if exist
-  let pageLoaderPath = pagePath.replace(/(\.md|\.html)$/, '.ts');
+  let pageLoaderPath = pagePath.replace(/(\.md|\.html)$/, '.js');
   
 
   if (fs.existsSync(pageLoaderPath)) {
@@ -34,7 +34,8 @@ export default async function pageTransform (pagePath, context={}) {
     pageFmObj = {...pageFmObj, ...loaderFmObj}
 
     // auto add loader script tag for client
-    let clientScriptPath = pageLoaderPath.match(/\/client\/.*$/)[0]
+    console.log({pageLoaderPath, pageRootPath})
+    let clientScriptPath = pageLoaderPath.replace(pageRootPath,'')
     pageContent += `<script type="module" src="${clientScriptPath}"></script>`
   }
    

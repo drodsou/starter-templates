@@ -1,3 +1,13 @@
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
+
+
+body {
+  background-color: black;
+  color: yellowgreen;
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -6,3 +16,15 @@
   color: #2c3e50;
   margin-top: 60px;
 }
+
+
+/* -- postcss nested example */
+/* .one {
+  background-color: cyan;
+
+  & .two {
+    background-color: yellow;
+  }
+} */
+
+ 
