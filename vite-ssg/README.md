@@ -4,15 +4,17 @@ vite plugin for a vanilla mpa similar to nextjs/sveltekit
 
 
 ## TODO
+- vite build works for somepage.js/ts (rollup not found, external?)
 
-- tailwind?
-- confirm index.ts are autoloaded (dev and build)
 - server functions (build)
 - configurable transformer: .md + layouts instead of .html, or other custom template, providing transformer.
 
 
 # DONE
-
+- somepage.ts TS works too (dynamic esbuild !)
+- process.cwd(), instead of get parent Dir()  ??
+- somepage.js are autoloaded (dev)
+- tailwind works
 - postcss works (eg postcss nesting)
 - both plugin in one clal
 - add hotreload on .md change

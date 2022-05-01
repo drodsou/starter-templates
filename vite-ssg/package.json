@@ -11,6 +11,7 @@
   "devDependencies": {
     "@types/node": "^17.0.30",
     "autoprefixer": "^10.4.5",
+    "esbuild": "^0.14.38",
     "marked": "^4.0.14",
     "postcss": "^8.4.13",
     "postcss-nesting": "^10.1.4",

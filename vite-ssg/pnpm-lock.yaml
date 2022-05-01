@@ -3,6 +3,7 @@ lockfileVersion: 5.3
 specifiers:
   '@types/node': ^17.0.30
   autoprefixer: ^10.4.5
+  esbuild: ^0.14.38
   marked: ^4.0.14
   postcss: ^8.4.13
   postcss-nesting: ^10.1.4
@@ -14,6 +15,7 @@ specifiers:
 devDependencies:
   '@types/node': 17.0.30
   autoprefixer: 10.4.5_postcss@8.4.13
+  esbuild: 0.14.38
   marked: 4.0.14
   postcss: 8.4.13
   postcss-nesting: 10.1.4_postcss@8.4.13

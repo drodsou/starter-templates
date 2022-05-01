@@ -1,9 +1,10 @@
 import {marked} from 'marked';
 import {withLayout} from './pageLayouts';
 import fs from 'fs';
+import tsImport from './ts-import';
 // const __dirname = import.meta.url.split('/').slice(3,-1).join('/');
 
-export default async function pageTransform (pagePath, pageRootPath) {
+export default async function pageTransform (pagePath, pageRootPath, isDev=false) {
   
   if (!fs.existsSync(pagePath)) {
     pagePath = pagePath.replace('.html','.md')
@@ -24,18 +25,28 @@ export default async function pageTransform (pagePath, pageRootPath) {
   )
   
   // -- add additional Fm entries from server loader, if exist
-  let pageLoaderPath = pagePath.replace(/(\.md|\.html)$/, '.js');
+  let pageLoaderPath = '';
+  for (let ext of ['.js','.ts']) {
+    let maybeLoaderPath = pagePath.replace(/(\.md|\.html)$/, ext)
+    if (fs.existsSync(maybeLoaderPath)) {
+      pageLoaderPath = maybeLoaderPath;
+      break;
+    }
+  }
   
-
-  if (fs.existsSync(pageLoaderPath)) {
-
+  if (pageLoaderPath !== '') {
     console.log({pageLoaderPath})
-    let loaderFmObj = await import('file://' + pageLoaderPath).then(m=>m.frontmatter());
+    let loaderFmObj = pageLoaderPath.endsWith('.js')
+      ? await import('file://' + pageLoaderPath).then(m=>m.frontmatter())
+      : await tsImport('file://' + pageLoaderPath).then(m=>m.frontmatter());
+
     pageFmObj = {...pageFmObj, ...loaderFmObj}
 
     // auto add loader script tag for client
-    console.log({pageLoaderPath, pageRootPath})
     let clientScriptPath = pageLoaderPath.replace(pageRootPath,'')
+    if (!isDev) {
+      clientScriptPath = clientScriptPath.replace('.ts','.js');
+    }
     pageContent += `<script type="module" src="${clientScriptPath}"></script>`
   }
    

@@ -9,6 +9,9 @@ export default {
   root: 'src',
   build: {
     outDir : '../dist',
+    rollupOptions : {
+      external : ['src/style.css', '/about/index.js']
+    }
   },
 
   // css: {

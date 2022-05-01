@@ -1,11 +1,13 @@
 import fs from "fs"; 
 import customTransformHtml from './pageTransform';
 
+
 // -- plugins wrapper
 export default function plugin() {
-  const PROJECT_ROOT = getViteConfigPath();
+  // const PROJECT_ROOT = getViteConfigPath();
+  
   // console.log({PROJECT_ROOT})
-  return [vmpaPlugin(PROJECT_ROOT),  autoreloadExtraPlugin() ]
+  return [vmpaPlugin(),  autoreloadExtraPlugin() ]
 }
 
 
@@ -15,22 +17,30 @@ export default function plugin() {
  * - maps .html to .md
  * - autogenerates input entries from .md/.html in root (/src)
 */
-function vmpaPlugin (PROJECT_ROOT) {
+function vmpaPlugin () {
  
+  let PAGES_ROOT = process.cwd().replace(/\\/g,'/') 
+
   return {
     name: 'myplugin',
     enforce: 'pre',
 
     config(config, {command}) {
       // console.log('--config');
+      PAGES_ROOT += config.root ? '/'  + config.root : '';
       if (command === 'build') {
-        config.build.rollupOptions.input = inputPages(PROJECT_ROOT + '/' + config.root)
+        console.log('--build1');
+        config.build = Object.assign( config.build ?? {}, {
+          rollupOptions : {
+            input : inputPages(PAGES_ROOT)
+          }
+        });
+        console.log('--build2', config.build);
       }
     },
 
     configureServer(server) {
-      
-      let rootDir = server.config.root
+
       // -- for dev mode only
       server.middlewares.use(async (req, res, next) => {
 
@@ -46,8 +56,8 @@ function vmpaPlugin (PROJECT_ROOT) {
           // intercepts html calls, no need for external index.html
           // thanks to: https://github.com/windsonR/vite-plugin-virtual-html
           req.originalUrl = req.url
-          let id = (rootDir + req.originalUrl);
-          let content = await customTransformHtml(id, rootDir);
+          let filePath = (PAGES_ROOT + req.originalUrl);
+          let content = await customTransformHtml(filePath, PAGES_ROOT, true);
           // adds default vite HMR
           content = await server.transformIndexHtml('',content)
 
@@ -68,10 +78,10 @@ function vmpaPlugin (PROJECT_ROOT) {
         return importee;  // tell Vite index.html exists when it looks for it
       }
     },
-    async load(id) {
+    async load(filePath) {
       // console.log('--load', id)
-      if (id.endsWith('.html')) {
-        return await customTransformHtml(id)
+      if (filePath.endsWith('.html')) {
+        return await customTransformHtml(filePath, PAGES_ROOT, false)
       }
     },
     transform(src, ctx) {
@@ -144,34 +154,34 @@ function inputPages (pagesDir) {
 
 }
 
-function getViteConfigPath() {
+// function getViteConfigPath() {
 
-  // -- https://github.com/sindresorhus/callsites
- function callsites() {
-   const _prepareStackTrace = Error.prepareStackTrace;
-   Error.prepareStackTrace = (_, stack) => stack;
-   // @ts-ignore
-   const stack = new Error().stack.slice(1); // eslint-disable-line unicorn/error-message
-   Error.prepareStackTrace = _prepareStackTrace;
-   return stack;
- }
+//   // -- https://github.com/sindresorhus/callsites
+//  function callsites() {
+//    const _prepareStackTrace = Error.prepareStackTrace;
+//    Error.prepareStackTrace = (_, stack) => stack;
+//    // @ts-ignore
+//    const stack = new Error().stack.slice(1); // eslint-disable-line unicorn/error-message
+//    Error.prepareStackTrace = _prepareStackTrace;
+//    return stack;
+//  }
 
- let vcPath = (<any>callsites())
-   .map((s:any)=>s.getFileName())
-   .filter((e:any)=>e?.includes('vite.config'))[0]
-   .replace(/\\/g,'/')
-   .replace(/^file:\/\//,'')
-   .replace(/\/vite\.config[^\/]*/,'')
+//  let vcPath = (<any>callsites())
+//    .map((s:any)=>s.getFileName())
+//    .filter((e:any)=>e?.includes('vite.config'))[0]
+//    .replace(/\\/g,'/')
+//    .replace(/^file:\/\//,'')
+//    .replace(/\/vite\.config[^\/]*/,'')
  
- // Windows, /C:/somedir => C:/somedir
- if (vcPath.match(/^\/.:/)) {  
-   vcPath = vcPath.slice(1)  
- }
+//  // Windows, /C:/somedir => C:/somedir
+//  if (vcPath.match(/^\/.:/)) {  
+//    vcPath = vcPath.slice(1)  
+//  }
   
- console.log(vcPath)
- return vcPath
+//  console.log(vcPath)
+//  return vcPath
 
-}
+// }
 
 
 /**
