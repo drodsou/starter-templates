@@ -44,9 +44,9 @@ export default async function pageTransform (pagePath, pageRootPath, isDev=false
 
     // auto add loader script tag for client
     let clientScriptPath = pageLoaderPath.replace(pageRootPath,'')
-    if (!isDev) {
-      clientScriptPath = clientScriptPath.replace('.ts','.js');
-    }
+    // if (!isDev) {
+    //   clientScriptPath = clientScriptPath.replace('.ts','.js');
+    // }
     pageContent += `<script type="module" src="${clientScriptPath}"></script>`
   }
    
