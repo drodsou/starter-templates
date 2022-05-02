@@ -24,30 +24,36 @@ export default async function pageTransform (pagePath, pageRootPath, isDev=false
       .map(e => e.split(':').map(e2=>e2.trim()) )
   )
   
-  // -- add additional Fm entries from server loader, if exist
-  let pageLoaderPath = '';
-  for (let ext of ['.js','.ts']) {
-    let maybeLoaderPath = pagePath.replace(/(\.md|\.html)$/, ext)
-    if (fs.existsSync(maybeLoaderPath)) {
-      pageLoaderPath = maybeLoaderPath;
+  // -- add additional Fm entries from page's build script, if exist
+  let pageBuildScriptPath = '';
+  for (let ext of ['.build.js','.build.ts']) {
+    let maybePath = pagePath.replace(/(\.md|\.html)$/, ext)
+    if (fs.existsSync(maybePath)) {
+      pageBuildScriptPath = maybePath;
       break;
     }
   }
-  
-  if (pageLoaderPath !== '') {
-    console.log({pageLoaderPath})
-    let loaderFmObj = pageLoaderPath.endsWith('.js')
-      ? await import('file://' + pageLoaderPath).then(m=>m.frontmatter())
-      : await tsImport('file://' + pageLoaderPath).then(m=>m.frontmatter());
+  if (pageBuildScriptPath !== '') {
+    let extraFmObj = pageBuildScriptPath.endsWith('.js')
+      ? await import('file://' + pageBuildScriptPath).then(m=>m.default())
+      : await tsImport('file://' + pageBuildScriptPath).then(m=>m.default());
 
-    pageFmObj = {...pageFmObj, ...loaderFmObj}
+    pageFmObj = {...pageFmObj, ...extraFmObj}
+  }
 
-    // auto add loader script tag for client
-    let clientScriptPath = pageLoaderPath.replace(pageRootPath,'')
-    // if (!isDev) {
-    //   clientScriptPath = clientScriptPath.replace('.ts','.js');
-    // }
-    pageContent += `<script type="module" src="${clientScriptPath}"></script>`
+
+  // -- auto add client script tag, if exists
+  let pageClientScriptPath = '';
+  for (let ext of ['.js','.ts']) {
+    let maybePath = pagePath.replace(/(\.md|\.html)$/, ext)
+    if (fs.existsSync(maybePath)) {
+      pageClientScriptPath = maybePath;
+      break;
+    }
+  }
+  if (pageClientScriptPath !== '') {
+    let relativeClientScriptPath = pageClientScriptPath.replace(pageRootPath,'')
+    pageContent += `<script type="module" src="${relativeClientScriptPath}"></script>`
   }
    
   // -- check frontmatter defaults
@@ -68,6 +74,22 @@ export default async function pageTransform (pagePath, pageRootPath, isDev=false
     pageHtml = pageHtml.split(`{{${fmEntry[0]}}}`).join(fmEntry[1]);
   });
   
+
+  // -- auto link page css file, if exists
+  let pageClientCssPath = '';
+  for (let ext of ['.css']) {
+    let maybePath = pagePath.replace(/(\.md|\.html)$/, ext)
+    if (fs.existsSync(maybePath)) {
+      pageClientCssPath = maybePath;
+      break;
+    }
+  }
+  if (pageClientCssPath !== '') {
+    let relativeClientCssPath = pageClientCssPath.replace(pageRootPath,'')
+    pageHtml = pageHtml.replace('</head>',
+      `<link rel="stylesheet" href="${relativeClientCssPath}"></head>`
+    );
+  }
   
 
   return pageHtml;

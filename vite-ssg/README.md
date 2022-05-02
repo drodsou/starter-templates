@@ -4,13 +4,18 @@ vite plugin for a vanilla mpa similar to nextjs/sveltekit
 
 
 ## TODO
-- vite build works for somepage.js/ts (rollup not found, external?)
+- custom layouts passed to plugin
 
 - server functions (build)
 - configurable transformer: .md + layouts instead of .html, or other custom template, providing transformer.
 
 
 # DONE
+- auto adds somepage.css
+- fixed css HMR
+- separated .build.js and (client).js (so build part does not appear on /dist)
+- Plugin auto adds vite's HMR code in somepage.ts, during dev
+- vite build works for somepage.js/ts (rollup not found, external?)
 - somepage.ts TS works too (dynamic esbuild !)
 - process.cwd(), instead of get parent Dir()  ??
 - somepage.js are autoloaded (dev)

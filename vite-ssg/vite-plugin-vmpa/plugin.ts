@@ -4,9 +4,6 @@ import customTransformHtml from './pageTransform';
 
 // -- plugins wrapper
 export default function plugin() {
-  // const PROJECT_ROOT = getViteConfigPath();
-  
-  // console.log({PROJECT_ROOT})
   return [vmpaPlugin(),  autoreloadExtraPlugin() ]
 }
 
@@ -20,6 +17,7 @@ export default function plugin() {
 function vmpaPlugin () {
  
   let PAGES_ROOT = process.cwd().replace(/\\/g,'/') 
+  let IS_DEV = true;
 
   return {
     name: 'myplugin',
@@ -29,7 +27,7 @@ function vmpaPlugin () {
       // console.log('--config');
       PAGES_ROOT += config.root ? '/'  + config.root : '';
       if (command === 'build') {
-        console.log('--build1');
+        IS_DEV = false;
         config.build = Object.assign( config.build ?? {}, {
           rollupOptions : {
             input : inputPages(PAGES_ROOT)
@@ -79,17 +77,26 @@ function vmpaPlugin () {
       }
     },
     async load(filePath) {
-      // console.log('--load', id)
+      // --build time only
       if (filePath.endsWith('.html')) {
         return await customTransformHtml(filePath, PAGES_ROOT, false)
       }
     },
-    transform(src, ctx) {
-      // console.log('--transform', ctx)
-       // this is if you need to transform custom 'import' as well
+    transform(src, filePath) {
+      // --this is if you need to transform custom 'import' as well
+      
+      // -- dev time only, add HMR
+      // if (IS_DEV && filePath.match(new RegExp(`${PAGES_ROOT}.*(\\.js|\\.ts)$`))) {
+      //   src += `
+
+      //     // -- autoincluded Vite HMR (in dev only)
+      //     if (import.meta.hot) { import.meta.hot.accept((/*newModule*/) => {}) }
+      //   `;
+      //   return src;
+      // }
     },
     async transformIndexHtml(html, ctx) {
-      // dev should never reach here, handled by middleware
+      // dev should never reach here, intercepted by middleware
       // build needs to do nothing as its already transformed by load()
     }
   }
@@ -103,27 +110,9 @@ function vmpaPlugin () {
 //   return content;
 // }
 
-
-// function layout(body) {
-//   return `
-//   <!DOCTYPE html>
-//   <html lang="en">
-//     <head>
-//       <meta charset="UTF-8" />
-//       <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-//       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-//       <title>Vite App</title>
-//     </head>
-//     <body>
-//       ${body}
-
-//       <div>footer</div>
-//     </body>
-//   </html>
-//   `;
-// }
-
-
+/**
+ * Main plugin helper
+*/
 function inputPages (pagesDir) {
 
   const readdirSyncRecursive = (d)=>  fs.readdirSync(d, {withFileTypes:true})
@@ -154,6 +143,40 @@ function inputPages (pagesDir) {
 
 }
 
+// -----------------------------------------------
+
+/**
+ *  Second plugin:
+ *  - full page autoreload on .md change
+*/
+function autoreloadExtraPlugin() {
+  return {
+    name: 'autoreload-extra',
+    enforce: 'post',
+    handleHotUpdate({ file, server }) {
+      if (file.match(/(\.md|\.build\.js)$/)) {
+        console.log('full page reload, file:', file);
+        server.ws.send({type: 'full-reload', path: '*'});
+      
+      // -- not needed, Vite does this already
+      // } else if (file.endsWith('.css')) {
+      //   console.log('hot updating css file:', file);
+      //   server.ws.send({type: 'update', updates: [
+      //     {path: file.match(/.*static(.*)/)[1], timestamp: Date.now()}
+      //   ]});
+      
+      } else {
+        console.log('file modified, but no update action taken:', file)
+      }
+    },
+  }
+}
+
+
+
+
+
+// -- not needed, process.cwd() is enough
 // function getViteConfigPath() {
 
 //   // -- https://github.com/sindresorhus/callsites
@@ -182,32 +205,3 @@ function inputPages (pagesDir) {
 //  return vcPath
 
 // }
-
-
-/**
- * additional plugin
- * - autoreload on .md change
- * - custom HMR
-*/
-function autoreloadExtraPlugin() {
-  return {
-    name: 'autoreload-extra',
-    enforce: 'post',
-    handleHotUpdate({ file, server }) {
-      if (file.match(/(\.md|\.loader\.js)$/)) {
-        console.log('full page reload, file:', file);
-        server.ws.send({type: 'full-reload', path: '*'});
-      }
-      else if (file.endsWith('.css')) {
-        console.log('hot updating css file:', file);
-        server.ws.send({type: 'update', updates: [
-          {path: file.match(/.*static(.*)/)[1], timestamp: Date.now()}
-        ]});
-      } else {
-        console.log('file modified, but no update action taken:', file)
-      }
-    },
-  }
-}
-
-
