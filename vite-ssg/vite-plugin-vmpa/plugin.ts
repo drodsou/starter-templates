@@ -1,6 +1,6 @@
 import fs from "fs"; 
 import customTransformHtml from './pageTransform';
-
+import tsImport from './ts-import';
 
 // -- plugins wrapper
 export default function plugin() {
@@ -41,10 +41,39 @@ function vmpaPlugin () {
 
       // -- for dev mode only
       server.middlewares.use(async (req, res, next) => {
+        // console.log('--middleware', req.url);
 
-        console.log('--middleware', req.url);
+        // -- vite things
         if (req.url.startsWith('/@') || req.url.startsWith('/__vite')) { return next(); }
 
+        // -- api calls
+        if (req.url.match(/\/api\/.*$/)) {
+          let apiModulePath = '';
+          if (fs.existsSync(PAGES_ROOT + req.url + '.js')) {
+            apiModulePath = PAGES_ROOT + req.url + '.js'
+          } else {
+            apiModulePath = PAGES_ROOT + req.url + '.ts'
+          }
+          try {
+            let apiModule = (req,res)=>{};
+            if (req.url.endsWith('.js')) {
+              apiModule = (await import('file://' + apiModulePath)).default;
+            } else {
+              apiModule = (await tsImport('file://' + apiModulePath)).default;
+            }
+            apiModule(req, res);
+            return;
+          } catch (e) {
+            res.writeHead(400, {
+              'Content-Type': 'application/json'
+            }).end(JSON.stringify({
+              error: e.message
+            }));
+            return
+          }
+        }
+
+        //-- html/md intercept
         let ext = req.url.split('.')[1]
         if (!ext) {
           req.url += req.url.endsWith('/') ? 'index.html' : '/index.html';

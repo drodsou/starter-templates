@@ -1,24 +1,21 @@
 {
   "compilerOptions": {
     "target": "esnext",
+    "module": "commonjs",
+    "noEmit": false, // emit /api
     "useDefineForClassFields": true,
-    "module": "esnext",
-    "lib": ["ES2021.String", "dom"],
     "moduleResolution": "Node",
     "strict": true,
     "sourceMap": false,
     "resolveJsonModule": true,
     "isolatedModules": false,
     "esModuleInterop": true,
-    "noEmit": true, // no emit, just check. Necessary ts is already collected by vite/rollup from html's
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "skipLibCheck": true,
-    "outDir" : "dist"
+    "outDir" : "dist/api",
+    "allowJs": true
   },
-  "include": ["src", "vite-env.d.ts"],
-  "ts-node": {
-    "transpileOnly": false
-  }
+  "include": ["src/api"]
 }
