@@ -1,0 +1,7 @@
+{
+  "liveServer.settings.root": "/",
+  "liveServer.settings.ignoreFiles": [
+    ".vscode/**",
+    "data.json*",  // must be glob, single files don't work
+  ]
+}
